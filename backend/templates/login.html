@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Voiceify</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #0f0f0f, #121212, #1a1a1a, #000000);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            color: #fff;
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%
+            }
+            50% {
+                background-position: 100% 50%
+            }
+            100% {
+                background-position: 0% 50%
+            }
+        }
+        /* Glassmorphism Container */
+        
+        .login-box {
+            backdrop-filter: blur(15px);
+            background: rgba(24, 24, 24, 0.85);
+            padding: 45px 35px;
+            width: 400px;
+            border-radius: 16px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1db954;
+            margin-bottom: 25px;
+        }
+        /* Floating Inputs */
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #121212;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.3s;
+            background: #121212;
+            padding: 0 5px;
+        }
+        
+        .input-group input:focus,
+        .input-group input:valid {
+            border: 1px solid #1db954;
+        }
+        
+        .input-group input:focus+label,
+        .input-group input:valid+label {
+            top: 0;
+            font-size: 11px;
+            color: #1db954;
+        }
+        /* Password Toggle */
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 13px;
+            color: #1db954;
+        }
+        /* Remember Me */
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        
+        .options input {
+            margin-right: 5px;
+        }
+        /* Glow Button */
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            border: none;
+            background: #1db954;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        button:hover {
+            background: #1ed760;
+            box-shadow: 0 0 25px #1db954;
+            transform: scale(1.05);
+        }
+        /* Divider */
+        
+        .divider {
+            margin: 25px 0;
+            border-top: 1px solid #333;
+        }
+        /* Social Buttons */
+        
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            border: 1px solid #333;
+            background: #121212;
+            color: #fff;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .social-btn:hover {
+            border: 1px solid #1db954;
+            box-shadow: 0 0 15px #1db954;
+        }
+        /* Register */
+        
+        .register-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .register-link a {
+            color: #1db954;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        /* Responsive */
+        
+        @media(max-width:480px) {
+            .login-box {
+                width: 90%;
+                padding: 35px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <div class="logo">Voiceify</div>
+        <h2 style="margin-bottom:25px;">Log in to Voiceify</h2>
+
+        <form action="/login" method="POST">
+
+            <div class="input-group">
+                <input type="text" name="username" required>
+                <label>Username</label>
+            </div>
+
+            <div class="input-group password-wrapper">
+                <input type="password" name="password" id="password" required>
+                <label>Password</label>
+                <span class="toggle-password" onclick="togglePassword()">Show</span>
+            </div>
+
+            <div class="options">
+                <label><input type="checkbox" name="remember"> Remember me</label>
+                <a href="#" style="color:#1db954;text-decoration:none;">Forgot Password?</a>
+            </div>
+
+            <button type="submit">Log In</button>
+        </form>
+
+        <div class="divider"></div>
+
+        <button class="social-btn">Continue with Google</button>
+        <button class="social-btn">Continue with GitHub</button>
+
+        <div class="register-link">
+            Don't have an account? <a href="/register">Sign up</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pass = document.getElementById("password");
+            const toggle = document.querySelector(".toggle-password");
+            if (pass.type === "password") {
+                pass.type = "text";
+                toggle.innerText = "Hide";
+            } else {
+                pass.type = "password";
+                toggle.innerText = "Show";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

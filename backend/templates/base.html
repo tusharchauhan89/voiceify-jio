@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ============ SIDEBAR ============ -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fab fa-spotify"></i> Spotify
+            </div>
+
+            <nav>
+                <a href="{{ url_for('index') }}" class="active"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('list_playlists') }}"><i class="fas fa-book"></i> Your Library</a>
+                <a href="{{ url_for('view_favorites') }}"><i class="fas fa-heart"></i> Liked Songs</a>
+                <a href="{{ url_for('recently_played') }}"><i class="fas fa-clock"></i> Recently Played</a>
+                <a href="{{ url_for('search_artist') }}"><i class="fas fa-users"></i> Popular Artists</a>
+                <a href="{{ url_for('user_profile') }}"><i class="fas fa-user"></i> Profile</a>
+                <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+
+            <div class="playlist-section">
+                <div class="playlist-title">Your Playlists</div>
+                {% for pl in playlists %}
+                <a href="{{ url_for('view_playlist', playlist_id=pl.id) }}">{{ pl.name }}</a> {% else %}
+                <span>No playlists</span> {% endfor %}
+            </div>
+        </aside>
+
+        <!-- ============ MAIN LAYOUT ============ -->
+        <div class="main-layout">
+
+            <!-- ===== CENTER CONTENT ===== -->
+            <main class="content">
+
+                <!-- TOPBAR (RESTORED SEARCH FORM) -->
+                <div class="topbar">
+                    <form action="{{ url_for('search') }}" method="get" class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="search" name="q" placeholder="Search for songs, artists, albums..." required>
+                    </form>
+
+                    <div class="top-actions">
+                        <button id="voiceControlBtn" class="premium-btn">🎤 Voice</button>
+                        <img src="https://avatars.githubusercontent.com/u/9919?s=40&v=4" class="avatar" onclick="window.location.href='{{ url_for('user_profile') }}'">
+                    </div>
+                </div>
+
+                <!-- SONG DISPLAY SECTION (REAL DATA) -->
+                <section class="hero">
+                    <div class="song-block">
+
+                        <img id="song-image" src="{{ image or '/static/default_album.png' }}" class="main-cover">
+
+                        <h2 id="song-title">
+                            {{ title or "Select a Song" }}
+                        </h2>
+
+                        <p id="song-artist">
+                            {{ artist or "Unknown Artist" }}
+                        </p>
+
+                        <p id="song-album">
+                            {{ album or "" }}
+                        </p>
+
+                        <div class="lyrics" id="song-lyrics">
+                            {{ lyrics or "Lyrics not available" }}
+                        </div>
+
+                        <!-- Playlist Add (RESTORED) -->
+                        <form id="addToPlaylistForm" method="POST" class="playlist-form" style="{{ 'display:flex;' if song_id and playlists else 'display:none;' }}">
+
+                            <input type="hidden" name="song_id" value="{{ song_id }}">
+                            <input type="hidden" name="name" value="{{ title }}">
+                            <input type="hidden" name="artist" value="{{ artist }}">
+                            <input type="hidden" name="album" value="{{ album }}">
+                            <input type="hidden" name="youtube_url" value="{{ audio_url }}">
+                            <input type="hidden" name="image_url" value="{{ image }}">
+
+                            <select name="playlist_id" required>
+                            <option value="" disabled selected>Select Playlist</option>
+                            {% for playlist in playlists %}
+                                <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                            <button type="submit">Add to Playlist</button>
+                        </form>
+
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- ===== RIGHT PANEL ===== -->
+            <aside class="right-panel">
+                <h3>Now Playing</h3>
+
+                <div class="now-playing-card">
+                    <img id="right-song-image" src="{{ image or '/static/default_album.png' }}">
+
+                    <h4 id="right-song-title">
+                        {{ title or "No Song Selected" }}
+                    </h4>
+
+                    <p id="right-song-artist">
+                        {{ artist or "" }}
+                    </p>
+
+                    <input id="progress" type="range" min="0" max="100" value="0">
+                </div>
+            </aside>
+
+        </div>
+
+        <!-- ============ BOTTOM PLAYER ============ -->
+        <footer class="player">
+
+            <div class="player-left">
+                <img id="bottom-song-image" src="{{ image or '/static/default_album.png' }}">
+
+                <div>
+                    <div id="bottom-song-title">
+                        {{ title or "No song playing" }}
+                    </div>
+                    <div id="bottom-song-artist">
+                        {{ artist or "" }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLS -->
+            <div class="player-center">
+                <div class="controls">
+                    <i class="fas fa-random" id="shuffleBtn"></i>
+                    <i class="fas fa-step-backward" id="prevBtn"></i>
+
+                    <button id="playBtn" class="play-btn">
+                    <i class="fas fa-play" id="playIcon"></i>
+                </button>
+
+                    <i class="fas fa-step-forward" id="nextBtn"></i>
+                    <i class="fas fa-redo" id="repeatBtn"></i>
+                </div>
+
+                <input id="mainProgress" type="range" min="0" max="100" value="0">
+            </div>
+
+            <div class="player-right">
+                <button id="bottom-favorite-btn" data-song-id="{{ song_id or '' }}">
+                <i class="far fa-heart {% if song_favorite %}fas{% endif %}"></i>
+            </button>
+
+                <input id="volume" type="range" min="0" max="100" value="80">
+            </div>
+
+        </footer>
+
+    </div>
+
+    <audio id="audio" src="{{ audio_url or '' }}"></audio>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+
+</body>
+
+</html>

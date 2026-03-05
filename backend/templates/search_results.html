@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Search results for "{{ query }}"</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #121212;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding-bottom: 100px;
+        }
+        /* HEADER */
+        
+        .header {
+            position: sticky;
+            top: 0;
+            padding: 30px 40px;
+            background: linear-gradient(180deg, #2a2a2a, #121212);
+            backdrop-filter: blur(20px);
+            z-index: 10;
+        }
+        
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        /* TABLE HEADER */
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 40px 3fr 2fr 1fr;
+            padding: 10px 40px;
+            font-size: 13px;
+            color: #b3b3b3;
+            border-bottom: 1px solid #282828;
+        }
+        /* SONG LIST */
+        
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .song-row {
+            display: grid;
+            grid-template-columns: 40px 3fr 2fr 1fr;
+            align-items: center;
+            padding: 12px 40px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        
+        .song-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .index {
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+        
+        .song-main {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .song-main img {
+            width: 45px;
+            height: 45px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .song-text strong {
+            display: block;
+            font-size: 14px;
+        }
+        
+        .song-text span {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+        
+        .album {
+            font-size: 13px;
+            color: #b3b3b3;
+        }
+        
+        .duration {
+            font-size: 13px;
+            color: #b3b3b3;
+        }
+        /* PLAY BUTTON ON HOVER */
+        
+        .play-overlay {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: .2s ease;
+        }
+        
+        .song-main:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        .play-overlay i {
+            color: white;
+        }
+        /* LINKS */
+        
+        .song-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h2>Search results for "{{ query }}"</h2>
+    </div>
+
+    <div class="table-header">
+        <div>#</div>
+        <div>Title</div>
+        <div>Album</div>
+        <div>Duration</div>
+    </div>
+
+    <ul class="song-list">
+        {% for song in songs %}
+        <li>
+            <a href="{{ url_for('play_song', song_id=song.id) }}" class="song-link">
+                <div class="song-row">
+
+                    <div class="index">{{ loop.index }}</div>
+
+                    <div class="song-main" style="position:relative;">
+                        <img src="{{ song.image }}" alt="{{ song.title }}">
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="song-text">
+                            <strong>{{ song.title }}</strong>
+                            <span>{{ song.artist }}</span>
+                        </div>
+                    </div>
+
+                    <div class="album">
+                        {{ song.album }}
+                    </div>
+
+                    <div class="duration">
+                        {{ song.duration or "3:45" }}
+                    </div>
+
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+</body>
+
+</html>

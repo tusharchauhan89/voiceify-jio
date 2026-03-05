@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Playlists - Spotify Clone</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: #121212;
+            color: #fff;
+            display: flex;
+        }
+        /* Sidebar */
+        
+        .sidebar {
+            width: 220px;
+            background: #000;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+        
+        .sidebar h2 {
+            color: #1db954;
+            margin-bottom: 40px;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: #b3b3b3;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        
+        .sidebar a:hover {
+            color: #fff;
+        }
+        /* Main content */
+        
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .main h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        /* Create Playlist */
+        
+        #create-playlist-form {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        #create-playlist-form input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: none;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        #create-playlist-form button {
+            background: #1db954;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        #create-playlist-form button:hover {
+            background: #1ed760;
+            transform: scale(1.05);
+        }
+        /* Grid */
+        
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+        }
+        /* Card */
+        
+        .playlist-card {
+            background: #181818;
+            padding: 18px;
+            border-radius: 12px;
+            transition: 0.3s;
+            position: relative;
+        }
+        
+        .playlist-card:hover {
+            background: #282828;
+        }
+        /* Image */
+        
+        .playlist-thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .playlist-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Play button */
+        
+        .play-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #1db954;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.3s;
+        }
+        
+        .playlist-card:hover .play-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Title */
+        
+        .playlist-title {
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* Delete */
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff4c4c;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .delete-btn:hover {
+            color: #ff0000;
+        }
+        
+        @media(max-width:768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                display: flex;
+                justify-content: space-around;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Spotify</h2>
+        <a href="{{ url_for('index') }}">🏠 Home</a>
+        <a href="{{ url_for('recently_played') }}">🕘 Recently Played</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <h1>Your Playlists</h1>
+
+        <form id="create-playlist-form" method="POST" action="{{ url_for('create_playlist') }}">
+            <input type="text" name="name" placeholder="Create new playlist" required autocomplete="off">
+            <button type="submit">Create</button>
+        </form>
+
+        <div class="playlist-grid">
+            {% for playlist in playlists %}
+            <div class="playlist-card">
+
+                <form method="POST" action="{{ url_for('delete_playlist', playlist_id=playlist.id) }}">
+                    <button type="submit" class="delete-btn">✕</button>
+                </form>
+
+                <a href="{{ url_for('view_playlist', playlist_id=playlist.id) }}" style="text-decoration:none;color:white;">
+
+                    <div class="playlist-thumb">
+                        <img src="{{ playlist.image_url or url_for('static', filename='images/playlist_placeholder.png') }}" alt="{{ playlist.name }}">
+                        <div class="play-btn">▶</div>
+                    </div>
+
+                    <div class="playlist-title">{{ playlist.name }}</div>
+
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+
+</html>
