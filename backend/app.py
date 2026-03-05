@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, session, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from backend.models import db, User, Song, Playlist, PlaylistSong, RecentlyPlayed, QueueItem, Favorite, Artist, PlaybackSettings, UserFavorite
+from backend.models import db, User, Song, Playlist, PlaylistSong, RecentlyPlayed, QueueItem, Favorite, Artist, PlaybackSettings, UserFavorites
 from backend.jiosaavn import search_for_song
 import requests
 import subprocess
